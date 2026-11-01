@@ -37,5 +37,5 @@ tests/test_transcript.py::test_transcript_loader_token_count_in_engineered_range
 tests/test_transcript.py::test_active_turns_accessor PASSED              [ 96%]
 tests/test_transcript.py::test_canonical_token_function_is_used_everywhere PASSED [100%]
 
-======================== 28 passed, 2 skipped in 3.09s ========================
+======================== 28 passed, 2 skipped in 9.04s ========================
 exit_code=0
