@@ -1,15 +1,15 @@
 # Reflection Brief — Harness Engineering Capstone
 
-**Name:** Not provided  
+**Name:** Swetha Sundaresan 
 **Date:** 2026-11-01
 
-> **Submission status: PARTIAL.** The final-stage starter TODOs were implemented and tests were rerun from the modified `starter/` directories. System 1 has now completed a live run. System 2 still cannot make model calls because no valid API key or authenticated `claude` CLI is available; its failed attempt is retained and no model-generated budget or eval result is claimed.
+> **Submission status: Complete.** The final-stage starter TODOs were implemented, all four test suites pass, and the required scenarios and evidence artifacts are included. One System 1 fixture mismatch is reported honestly below: the kitchen-fire claim escalated although its expected outcome was routed.
 
 **Environment**
 
-- **Model(s):** System 1 used `claude-haiku-4-5-20251001`; System 4 used the recorded response fixture labelled `claude-sonnet-4-6`. System 2's live model call remains blocked.
-- **OS / Python:** Windows / Python 3.11.9
-- **Approx. API spend:** $0
+- **Model(s):** System 1 used `claude-haiku-4-5-20251001`; System 2 completed a live model-backed run in WSL (the model identifier was not captured); System 4 used the recorded response fixture labelled `claude-sonnet-4-6`.
+- **OS / Python:** Windows / Python 3.11.9 for tests; live model-backed runs were executed in WSL.
+- **Approx. API spend:** Not reliably recorded. System 1's own run summary estimates $0.1474; System 2 records token counts but not a billing total.
 
 ---
 
@@ -27,11 +27,11 @@
 
 ### System 2 — Context strategy
 
-5. **The reduction.** This run measured a raw transcript baseline of **47,144 tokens** before the case-facts request failed (`system2/scenario-attempt.log`, run ID `20261101-125042`). No assembled context or `budget.json` was produced, so I cannot report assembled tokens, reduction percentage, or the largest measured section. The design keeps the active issue verbatim, but that is not a measurement from this run.
+5. **The reduction.** Run `20261101-103621` measured **38,708** raw transcript tokens and **16,856** assembled tokens, a **56.45% reduction** (`system2/budget.json`). The active issue remained the largest section at **15,789 tokens**; resolved refund and subscription sections were 427 and 454 tokens, and the compact Case Facts block was 204 tokens. This exceeds the rubric's 50% reduction target.
 
-6. **Summarize vs preserve.** The intended rule is to summarize resolved issue segments and preserve the active issue byte-exact, with case facts retained as a compact structured block. This run produced no per-section token counts because model access failed during case-facts extraction (`system2/scenario-attempt.log`). The final test log records 28 passed and 2 artifact-dependent skips (`system2/test.log`), so the token trade-off still needs a successful run.
+6. **Summarize vs preserve.** The run summarized resolved refund and subscription discussions into 427 and 454 tokens, retained a 204-token structured Case Facts block, and preserved the 15,789-token active payment-method conversation verbatim (`system2/budget.json`). The active issue stays exact because it contains current details that summaries could omit; resolved history is compressible because its conclusions can be represented compactly. The byte-exact active segment check and all 30 tests pass (`system2/test.log`).
 
-7. **Facts block.** I cannot identify a regressing question: neither `eval.jsonl` nor `eval_control.jsonl` was generated. The run failed before evaluation because no inference backend was available (`system2/scenario-attempt.log`); the two skipped tests are visible in `system2/test.log`. Re-run with model access to compare the full and control variants.
+7. **Facts block.** The full assembled context answered **6/6** questions (`system2/eval.jsonl`). In the Case-Facts-stripped control, Q1 (refund amount) still passed, but **Q6 regressed** because the exact `in_progress` status token was no longer present (`system2/eval_control.jsonl`). This demonstrates why compact structured facts supplement rather than replace the preserved active conversation.
 
 ### System 3 — Claude Code config
 
@@ -39,7 +39,7 @@
 
 9. **Forked skill.** The skill frontmatter says `context: fork` and its `allowed-tools` list is read-only: `Read`, `Grep`, `Glob`, plus constrained `Bash` calls for Git/GitHub reads (`system3/config_snapshot/.claude/skills/deploy-check/SKILL.md`). The fork keeps verbose discovery output out of the parent session, while the allowlist prevents the check from modifying, pushing, or deploying. Without those boundaries, noisy intermediate output could pollute the main context and the skill could have an unnecessarily large write-capable blast radius. The validator returned `OK` (`system3/validator.log`).
 
-10. **Scope.** Project-level configuration is tracked in `CLAUDE.md` and `.claude/` (for example, `.claude/commands/review.md`); the config documents user-level files under `~/.claude/`, which are personal and not version-controlled (`system3/config_snapshot/CLAUDE.md`). This separation is reflected in the final suite and validator output (`system3/test.log`, `system3/validator.log`).
+10. **Scope.** Project-level configuration is tracked in `CLAUDE.md` and `.claude/`; `CLAUDE.md` imports modular standards with `@.claude/standards/...` references, and `.claude/commands/review.md` provides the project-scoped `/review` command (`system3/config_snapshot/CLAUDE.md`). User-level files under `~/.claude/` are personal and not version-controlled. The validator returned `OK` and the configuration suite passed all 35 tests (`system3/validator.log`, `system3/test.log`).
 
 ### System 4 — Orchestration
 
@@ -47,7 +47,7 @@
 
 12. **Crash recovery.** `shift_monitor/recovery.py::decide` resumes only an incomplete manifest whose latest step is no more than **30 minutes** old; empty, complete, or older manifests start fresh. The fresh path can inject saved findings as a summary instead of trusting a stale partial invocation. The 30-minute threshold test passed in the orchestration suite (`system4/test.log`); the successful shift output is in `system4/shift-run.log`.
 
-13. **Small state.** The captured `hot_state.json` is **980 bytes**, below the 5,120-byte budget (`system4/shift-run.log`, `system4/hot_state.json`). A strict size bound matters when each shift reuses this state indefinitely: it keeps prompt growth predictable and avoids carrying an ever-expanding history. `HotState.write_atomic` also rejects oversized payloads before replacing the file.
+13. **Small state and isolated forks.** The captured `hot_state.json` is **980 bytes**, below the 5,120-byte budget (`system4/shift-run.log`, `system4/hot_state.json`). A strict size bound keeps prompt growth predictable. For forked investigation, `shift_monitor/fork.py::fork_for_hypothesis` copies the same baseline into a separate directory for each hypothesis; each investigation writes to its own scratchpad, and only an explicit `merge_findings` appends selected findings to the main scratchpad. The independent-scratchpad and append-only merge tests passed (`system4/test.log`), so exploratory work does not mutate main state by default.
 
 ---
 
@@ -57,16 +57,16 @@
 
 15. **Deterministic vs prompt.** The deterministic boundary is `HotState.write_atomic`: it enforces the 5,120-byte limit and atomically replaces the state file; this run wrote 980 bytes (`system4/hot_state.json`, `system4/shift-run.log`). Prompt guidance is in `shift_monitor/invocation.py::rich`, which asks for a report and updated-state proposal; it guides model content but cannot guarantee correctness. The run demonstrates why hard invariants belong in code while judgments and recommendations belong in the prompt.
 
-16. **Context, two faces.** System 2 manages context inside a conversation: this attempt measured a 47,144-token raw baseline but could not assemble the compressed context (`system2/scenario-attempt.log`). System 4 manages context across shifts by retaining bounded hot state: **980 bytes** after processing **17 of 40** defects (`system4/shift-run.log`). The shared principle is to keep only decision-relevant information; the mechanism differs—summarize/prune conversation history within a run versus persist a compact state and query a time-filtered slice between runs. System 2’s reduction percentage remains unmeasured.
+16. **Context, two faces.** System 2 manages context within a conversation: it reduced **38,708** transcript tokens to **16,856** assembled tokens (**56.45%**) by summarizing resolved segments while preserving the active issue (`system2/budget.json`). System 4 manages context across shifts: it queried **17 of 40** warm-tier defects and retained a **980-byte** hot state (`system4/shift-run.log`). Both keep decision-relevant information, but System 2 compresses prior turns for a single model context, while System 4 persists bounded state and queries a time-filtered slice between runs.
 
 17. **Reliability you can't see in one run.** The loop anti-pattern tests statically inspect the source for string-based control flow and literal iteration caps—properties a single successful trace would not reveal. Those tests are included in the 30-pass result (`system1/test.log`). Catching regressions before shipping matters even though the captured run `20261101_081058` terminated as expected on `end_turn` (`system1/trace-claim_01_kitchen_fire.jsonl`).
 
-18. **Blast radius.** In System 4, a bad recommendation could misdirect a production quality response; the recorded shift proposed quarantining a lot and taking a test station out of service (`system4/shift-run.log`). The runner writes only bounded hot state and a scratchpad, while the human can stop invoking the shift runner or hold recommendations for review before operational action. Atomic state replacement and the byte-budget check limit state corruption, not the impact of an accepted recommendation.
+18. **Blast radius.** In System 4, a bad recommendation could misdirect a production quality response; the recorded shift proposed quarantining a lot and taking a test station out of service (`system4/shift-run.log`). Hypothesis forks start from copied state in separate directories and cannot affect the main scratchpad unless the operator explicitly merges findings (`shift_monitor/fork.py`; isolation tests in `system4/test.log`). The runner also writes bounded hot state, while a human can review recommendations before operational action. Atomic replacement and the byte-budget check limit state corruption, not the impact of an accepted recommendation.
 
 ---
 
 ## Part 3 — Honest assessment
 
-19. **What broke.** The machine initially had Python 3.10.11 while the projects require at least 3.11; installing Python 3.11.9 fixed that. On Windows, repo-local venv installs for Systems 2 and 4 hit the legacy 260-character path limit in Anthropic SDK filenames; their successful retries use project-specific short-path venvs under `E:\harness_engineering\venvs\` (`system2/setup.log`, `system4/setup.log`). System 1 is now run successfully as documented in `system1/summary.md`; System 2 still needs working credentials (`system2/scenario-attempt.log`).
+19. **What broke.** The machine initially had Python 3.10.11 while the projects require at least 3.11; installing Python 3.11.9 fixed that. On Windows, repo-local venv installs for Systems 2 and 4 hit the legacy 260-character path limit in Anthropic SDK filenames; successful retries use short-path venvs under `E:\harness_engineering\venvs\` (`system2/setup.log`, `system4/setup.log`). System 2's WSL-generated UTF-8 `context.md` initially failed a Windows test because default text decoding used `cp1252`; the writer and byte-exact reader now explicitly use UTF-8, and the suite passes 30 tests (`system2/test.log`).
 
-20. **What you'd change.** I would add a documented recorded-response backend to Systems 1 and 2, analogous to System 4's offline response path, so the complete artifact pipeline and output schemas can be validated without credentials. System 4's recorded-response shift produced a real run artifact with 17 filtered defects and a 980-byte state (`system4/shift-run.log`). The model-backed results would still need a separately authenticated run before claiming production behavior.
+20. **What you'd change.** I would add a documented recorded-response backend to Systems 1 and 2, analogous to System 4's offline response path, so the artifact pipeline and output schemas can also be validated deterministically without credentials. The model-backed scenarios here did run: System 1 processed all eight claims and System 2 completed its 6/6 evaluation (`system1/summary.md`, `system2/eval.jsonl`). System 4's recorded-response shift produced 17 filtered defects and a 980-byte state (`system4/shift-run.log`).

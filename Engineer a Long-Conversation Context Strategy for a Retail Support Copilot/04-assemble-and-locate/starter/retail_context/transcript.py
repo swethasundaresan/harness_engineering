@@ -69,7 +69,7 @@ class Transcript:
 
 
 def load(path: str | Path) -> Transcript:
-    data = json.loads(Path(path).read_text())
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
     raw_turns = data["turns"]
 
     turns = [

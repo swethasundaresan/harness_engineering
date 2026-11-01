@@ -9,8 +9,8 @@ collecting ... collected 30 items
 tests/test_antipatterns.py::test_pruner_has_no_anthropic_import PASSED   [  3%]
 tests/test_antipatterns.py::test_only_tokens_module_uses_count_tokens_or_heuristic PASSED [  6%]
 tests/test_antipatterns.py::test_assemble_module_section_order_contract PASSED [ 10%]
-tests/test_antipatterns.py::test_assembled_context_active_segment_byte_exact SKIPPED [ 13%]
-tests/test_antipatterns.py::test_budget_json_section_counts_sum_consistently SKIPPED [ 16%]
+tests/test_antipatterns.py::test_assembled_context_active_segment_byte_exact PASSED [ 13%]
+tests/test_antipatterns.py::test_budget_json_section_counts_sum_consistently PASSED [ 16%]
 tests/test_assemble.py::test_assemble_section_order_exact PASSED         [ 20%]
 tests/test_assemble.py::test_active_segment_byte_exact PASSED            [ 23%]
 tests/test_assemble.py::test_no_interleaving_of_resolved_and_active PASSED [ 26%]
@@ -37,5 +37,5 @@ tests/test_transcript.py::test_transcript_loader_token_count_in_engineered_range
 tests/test_transcript.py::test_active_turns_accessor PASSED              [ 96%]
 tests/test_transcript.py::test_canonical_token_function_is_used_everywhere PASSED [100%]
 
-======================== 28 passed, 2 skipped in 9.04s ========================
+============================= 30 passed in 13.11s =============================
 exit_code=0

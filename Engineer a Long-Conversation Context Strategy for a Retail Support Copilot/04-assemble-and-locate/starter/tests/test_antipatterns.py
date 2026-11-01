@@ -97,7 +97,7 @@ def test_assembled_context_active_segment_byte_exact():
 
     t = load(ROOT / "data" / "transcript_48turns.json")
     raw_active = "\n\n".join(turn.render() for turn in t.active_turns)
-    context_md = (run / "context.md").read_text()
+    context_md = (run / "context.md").read_text(encoding="utf-8")
     assert raw_active in context_md, (
         "active segment in context.md does not match raw turns 29-48 byte-for-byte"
     )
@@ -109,7 +109,7 @@ def test_budget_json_section_counts_sum_consistently():
     if run is None or not (run / "budget.json").exists():
         pytest.skip("no run artifacts available — run `python -m retail_context.run --build` first")
 
-    budget = json.loads((run / "budget.json").read_text())
+    budget = json.loads((run / "budget.json").read_text(encoding="utf-8"))
     assert "token_counter_methodology" in budget
     assert "baseline_tokens" in budget
     assert "assembled_tokens" in budget

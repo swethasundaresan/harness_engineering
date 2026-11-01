@@ -36,7 +36,7 @@ def _run_id() -> str:
 
 
 def _load_eval_questions() -> list[dict[str, Any]]:
-    return json.loads((DATA_DIR / "eval_questions.json").read_text())["questions"]
+    return json.loads((DATA_DIR / "eval_questions.json").read_text(encoding="utf-8"))["questions"]
 
 
 def _build(run_dir: Path) -> tuple[Any, Any, Any]:
@@ -57,7 +57,7 @@ def _build(run_dir: Path) -> tuple[Any, Any, Any]:
 
     assembled = build_context(facts, compressed)
 
-    (run_dir / "context.md").write_text(assembled.markdown)
+    (run_dir / "context.md").write_text(assembled.markdown, encoding="utf-8")
 
     section_tokens = assembled.section_tokens()
     total = assembled.total_tokens()
@@ -75,7 +75,7 @@ def _build(run_dir: Path) -> tuple[Any, Any, Any]:
             for issue_id, s in compressed.summaries.items()
         },
     }
-    (run_dir / "budget.json").write_text(json.dumps(budget, indent=2))
+    (run_dir / "budget.json").write_text(json.dumps(budget, indent=2), encoding="utf-8")
 
     print()
     print(f"      assembled tokens: {total}  ({budget['reduction_pct']}% reduction)")

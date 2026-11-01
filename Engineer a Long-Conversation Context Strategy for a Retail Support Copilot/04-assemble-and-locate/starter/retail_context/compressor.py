@@ -31,7 +31,7 @@ class Compressed:
 def _load_prompt() -> str:
     return resources.files("retail_context.prompts").joinpath(
         "compression_prompt.md"
-    ).read_text()
+    ).read_text(encoding="utf-8")
 
 
 def summarize_segment(segment: Segment, *, model: str | None = None) -> Summary:

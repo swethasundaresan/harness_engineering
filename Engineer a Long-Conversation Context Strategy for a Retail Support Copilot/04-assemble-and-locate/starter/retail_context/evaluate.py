@@ -103,6 +103,6 @@ def strip_case_facts(context_markdown: str) -> str:
 
 def write_jsonl(results: list[EvalResult], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w") as f:
+    with path.open("w", encoding="utf-8") as f:
         for r in results:
             f.write(json.dumps(r.to_dict()) + "\n")

@@ -141,7 +141,8 @@ def extract(
                     "raw_output": raw,
                 },
                 indent=2,
-            )
+            ),
+            encoding="utf-8",
         )
 
     missing = [
