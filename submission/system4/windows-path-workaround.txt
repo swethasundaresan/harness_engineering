@@ -1,0 +1,8 @@
+Windows path issue
+
+The repo-local venv install failed while unpacking the Anthropic SDK because a
+site-packages filename exceeded Windows' legacy 260-character path limit.
+Creating the venv through a `subst` drive still resolved to the long physical
+path. The successful retry uses the project-specific venv at
+E:\harness_engineering\venvs\system4 and installs the project editably from a
+short mapped project path.

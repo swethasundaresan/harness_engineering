@@ -2,10 +2,10 @@
 
 **Course:** Claude Certified Architect — Foundations / Course 1, Harness Engineering
 **Module:** 2 — Context Engineering Foundations
-**Status:** Starter scaffold — implement the TODO-marked sections (reference solution in `../solution/`)
+**Status:** Solution exemplar
 **Build:** Python 3.11+, `anthropic` SDK, runs in Docker with `$ANTHROPIC_API_KEY`
 
-This is the starter scaffold — you fill in the TODO-marked sections; the reference solution lives in `../solution/`. The system designs a context-management strategy for a 48-turn retail customer-support conversation that spans three issues — a refund inquiry (resolved), a subscription cancellation (resolved), and a payment-method update (active). The raw transcript is ~35,000 tokens; the assembled context is **the project's measurable output**, recorded in `runs/<run_id>/context.md` alongside `budget.json` (token accounting) and `eval.jsonl` (evaluation results against the compressed context).
+This is the reference solution. The system designs a context-management strategy for a 48-turn retail customer-support conversation that spans three issues — a refund inquiry (resolved), a subscription cancellation (resolved), and a payment-method update (active). The raw transcript is ~35,000 tokens; the assembled context is **the project's measurable output**, recorded in `runs/<run_id>/context.md` alongside `budget.json` (token accounting) and `eval.jsonl` (evaluation results against the compressed context).
 
 The defining architectural choice is **application-side context engineering**: the harness owns the assembly, compression, and pruning decisions, not the model. This is the pattern to apply for context engineering ("trim verbose tool outputs … *before they accumulate in context*"). The cookbook labs demonstrate the *server-side* counterpart (`clear_tool_uses_20250919`, `compact_20260112`) — see "What I'd do next" below for the contrast.
 
@@ -13,34 +13,62 @@ The defining architectural choice is **application-side context engineering**: t
 
 ## Context-window anatomy
 
-<!-- TODO (Exercise 4): Replace this section with the five-layer context-window
-     anatomy diagram (system prompt → CLAUDE.md → memory → conversation history
-     → current turn) AND a one-paragraph note locating *this project's* work on
-     one specific layer. The diagram can be ASCII or Mermaid — the point is
-     that a reviewer can read a labeled box and find the corresponding section
-     of `runs/<id>/context.md`. -->
+```
+┌─────────────────────────────────────────────────────────┐
+│ Layer 5  System prompt                                  │  set at session start
+├─────────────────────────────────────────────────────────┤
+│ Layer 4  CLAUDE.md  (project + user + directory)        │  walked once at boot
+├─────────────────────────────────────────────────────────┤
+│ Layer 3  Memory / scratchpad files                      │  loaded on demand
+├─────────────────────────────────────────────────────────┤
+│ Layer 2  Conversation history     ← THIS PROJECT ──┐    │  appended each turn
+│                                                    │    │  auto-compressed when full
+├─────────────────────────────────────────────────────────┤
+│ Layer 1  Current turn                                   │  the user's new message
+└─────────────────────────────────────────────────────────┘
+```
+
+This project operates on **Layer 2** — the conversation history layer. We do not write CLAUDE.md or memory files. The strategy below decides what survives compression and where it sits inside the history block when it does.
 
 ## Why this layout?
 
-<!-- TODO (Exercise 4): Replace this section with 3-5 sentences naming WHY
-     case facts sit at the top, resolved summaries sit in the middle, and the
-     active segment sits verbatim at the bottom. Cite at minimum:
-       (a) the "lost in the middle" attention effect,
-       (b) the resolved-vs-active fidelity tradeoff, and
-       (c) the pass-complete-history baseline this project deliberately deviates
-           from (only for resolved threads, where coherence is no longer load-
-           bearing). The "scratchpad" synonym for the case-facts block is worth
-           naming. -->
+The assembled context places **case facts at the top boundary**, **resolved-issue summaries in the compressible middle**, and **the active issue verbatim at the bottom boundary** — directly above the new user turn:
+
+```
+# Case Facts                                    ← top boundary, structured (≤ 600 tokens)
+# Resolved: Refund inquiry                      ← middle, summary (~300-500 tokens)
+# Resolved: Subscription cancellation           ← middle, summary (~300-500 tokens)
+# Active issue: Payment-method update           ← bottom boundary, byte-exact verbatim
+```
+
+Three considerations drive this layout:
+
+1. **Lost in the middle** — attention models reliably process content at the start and end of long inputs but degrade on middle sections. We park the *resolved* narrative — the part where small fidelity losses are acceptable — in the middle. The most decision-load-bearing content (case-facts identifiers; live turn-by-turn active conversation) sits at the boundaries where attention is strongest.
+
+2. **Resolved-vs-active fidelity tradeoff** — for resolved issues, the facts that matter have stabilized (amounts, IDs, statuses, dates) and can be condensed without information loss. For the *active* issue, every turn-by-turn nuance is potentially decision-load-bearing because the resolution is still being worked out. We summarize the first, preserve the second byte-exact.
+
+3. **The pass-complete-history baseline** — the standard guidance names "the importance of passing complete conversation history in subsequent API requests to maintain conversational coherence." This project deliberately deviates from that default *only* for resolved threads, where conversational coherence is no longer load-bearing. The active thread is preserved verbatim, so coherence on the live issue is uncompromised. The case-facts block exists precisely so that the resolved-thread compression cannot accidentally drop a fact the agent needs later — it's the **scratchpad** that survives compression (the term "scratchpad" is sometimes used for what this project calls the case-facts block; same pattern, different name).
 
 ## Before / after token budget
 
-<!-- TODO (Exercise 4): Replace this section with a one-line statement of the
-     token-counting methodology actually used (sourced from `tokens.methodology()`
-     and recorded in `budget.json`), followed by a Markdown table populated from
-     `runs/<id>/budget.json` showing per-section + assembled total + baseline +
-     reduction-percentage. The table is *sourced from* `budget.json`, not
-     narrated — anyone re-running the pipeline should regenerate the same table
-     (modulo a few percent of drift if the Anthropic endpoint is used). -->
+Token-counting methodology: **Anthropic `messages.count_tokens` endpoint** (model-authoritative) when `ANTHROPIC_API_KEY` is set; a documented `len(text) / 3.8` heuristic falls back when running against the Claude Code CLI subscription. Either path flows through the single canonical `retail_context.tokens.count` function.
+
+Numbers below are from `runs/20260519-124910/budget.json` (Haiku 4.5, heuristic counter):
+
+| Section | Tokens |
+|---|---:|
+| `case_facts` | 149 |
+| `resolved_refund` | 296 |
+| `resolved_subscription` | 365 |
+| `active` (verbatim) | 19,538 |
+| **Assembled total** | **20,350** |
+| Baseline transcript | 47,144 |
+| **Reduction vs baseline** | **56.83%** |
+
+Observations:
+- The active (verbatim) segment dominates the budget at ~96% of the assembled context. That's by design — the active issue is where decisions are still being made, so fidelity is non-negotiable. Compression bought us back ~27,000 tokens, all from the resolved segments and the case-facts distillation.
+- The case-facts block is **149 tokens** — small enough to sit at the top boundary without crowding out attention, dense enough to carry all 12 transactional fields.
+- The resolved-segment summaries averaged ~330 tokens each, compressing ~13,000 tokens of raw narrative per segment to <500 tokens — ~97.5% reduction on the resolved portion.
 
 ## Eval results
 

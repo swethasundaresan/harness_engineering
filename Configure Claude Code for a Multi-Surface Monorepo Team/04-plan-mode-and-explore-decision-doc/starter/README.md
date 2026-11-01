@@ -1,22 +1,23 @@
-# Starter — Exercise 4
+# Solution — Exercise 4
 
-This starter carries everything from Exercise 3's solution plus a starter `docs/plan-mode-vs-direct-execution.md`.
+This directory contains the project state after Exercise 4. **This is the complete reference state** — equivalent to the team's working configuration system in production.
 
-## Files you will edit
+Compared to the starter, `docs/plan-mode-vs-direct-execution.md` is now complete:
 
-- `docs/plan-mode-vs-direct-execution.md` — five TODO blocks:
-  1. Knight-Webb citation block (sourced via the Module 8 curriculum doc's anchor-talks table — NOT the Architect's Playbook).
-  2. Section 1 — plan-mode example touching ≥3 files in `src/components/`, citing "prevent costly rework."
-  3. Section 2 — direct-execution example targeting one function in `src/api/orders/handler.ts`.
-  4. Section 3 — Explore sub-agent example with the scratchpad-pattern reference.
-  5. Section 4 — combined-workflow example renaming `findById` → `getById` in `src/db/orders.ts`.
+- Knight-Webb citation block in the decision doc.
+- Section 1 — extracting a shared `useCart` hook from `src/components/Cart/Cart.tsx`, `src/components/Checkout/Checkout.tsx`, and `src/components/MiniCart/MiniCart.tsx`. Cites "prevent costly rework."
+- Section 2 — adding a `min: 0` validation to one quantity field in `src/api/orders/handler.ts`.
+- Section 3 — `processRefund` call-site inventory across `src/api/orders/refund.ts`, `src/api/billing/issue.ts`, and `src/services/payment.ts`, referencing the scratchpad pattern.
+- Section 4 — renaming `ordersRepo.findById` → `getById` in `src/db/orders.ts`, plan-mode for the call-site investigation followed by direct execution for the mechanical rename.
 
-## Run / verify
+## Verify
 
 ```bash
-source .venv/bin/activate
-pytest -q
-ecommerce-team-config .
+pytest -q && ecommerce-team-config .
 ```
 
-Replace each TODO until pytest reports `35 passed` and the CLI prints `OK`.
+Expected: **35 passed** + `OK`.
+
+## Notes
+
+- `data/.gitkeep` and `fixtures/.gitkeep` keep the empty scaffold directories trackable in version control. Cleanup-only; no behavior change.

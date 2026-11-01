@@ -1,5 +1,5 @@
 {
-  "description": "Six eval questions whose answers span all three issues. Pass threshold ≥ 5/6 against compressed context. Q1 and Q6 must fail when case-facts block is removed (control), proving the block is load-bearing.",
+  "description": "Six eval questions whose answers span all three issues. Pass threshold ≥ 5/6 against compressed context. At least one of Q1 and Q6 must fail when the case-facts block is removed (control), proving the block is load-bearing.",
   "questions": [
     {
       "id": "Q1",

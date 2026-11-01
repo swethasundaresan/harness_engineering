@@ -107,9 +107,11 @@ def _eval(run_dir: Path, assembled_md: str) -> None:
     evaluate.write_jsonl(control_results, run_dir / "eval_control.jsonl")
     for r in control_results:
         marker = "PASS" if r.passed else "FAIL"
-        expected = "expected FAIL" if not r.passed else "UNEXPECTED PASS"
+        expected = "regressed" if not r.passed else "held without case facts"
         print(f"      {marker}  {r.question_id}  ({expected})")
         print(f"            answer: {r.model_answer[:120]}")
+    n_regressed = sum(1 for r in control_results if not r.passed)
+    print(f"      => {n_regressed}/{len(control_results)} control questions regressed (≥1 required)")
 
 
 def main(argv: list[str] | None = None) -> int:

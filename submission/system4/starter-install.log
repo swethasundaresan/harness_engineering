@@ -1,0 +1,31 @@
+﻿Obtaining file:///E:/harness_engineering/harness_engineering/Build%20a%20Multi-Shift%20Quality%20Monitoring%20System%20with%20Claude%20Orchestration/04-fork-scratchpad/starter
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: shift-monitor
+  Building editable for shift-monitor (pyproject.toml): started
+  Building editable for shift-monitor (pyproject.toml): finished with status 'done'
+  Created wheel for shift-monitor: filename=shift_monitor-0.1.0-0.editable-py3-none-any.whl size=3278 sha256=640854cbe837dc2c86fb1a5634366336c0ffe02f4a30474a9f8b3948d4b6d34a
+  Stored in directory: C:\Users\HP\AppData\Local\Temp\pip-ephem-wheel-cache-xdwnflzp\wheels\04\ba\b4\09097ac28861ffc17991de01def996c8c6fee02597b9d8d302
+Successfully built shift-monitor
+Installing collected packages: shift-monitor
+  Attempting uninstall: shift-monitor
+    Found existing installation: shift-monitor 0.1.0
+    Uninstalling shift-monitor-0.1.0:
+      Successfully uninstalled shift-monitor-0.1.0
+Successfully installed shift-monitor-0.1.0
+python.exe : 
+At line:2 char:183
++ ... oject; $out=& 'E:\harness_engineering\venvs\system4\Scripts\python.ex ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: E:\harness_engineering\venvs\system4\Scripts\python.exe -m pip install --upgrade pip
+exit_code=0

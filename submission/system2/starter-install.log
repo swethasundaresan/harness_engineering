@@ -1,0 +1,31 @@
+﻿Obtaining file:///E:/harness_engineering/harness_engineering/Engineer%20a%20Long-Conversation%20Context%20Strategy%20for%20a%20Retail%20Support%20Copilot/04-assemble-and-locate/starter
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: retail_context
+  Building editable for retail_context (pyproject.toml): started
+  Building editable for retail_context (pyproject.toml): finished with status 'done'
+  Created wheel for retail_context: filename=retail_context-0.2.0-0.editable-py3-none-any.whl size=2975 sha256=0b84a92905964ea3844681e5903f1fbf9e9af1d9b6ad40729bda16b6f4ab8931
+  Stored in directory: C:\Users\HP\AppData\Local\Temp\pip-ephem-wheel-cache-mb2nov0l\wheels\09\1f\f8\cdaf5ef4620ea2841c6fb89467f8f9baef95e045cbb254d54f
+Successfully built retail_context
+Installing collected packages: retail_context
+  Attempting uninstall: retail_context
+    Found existing installation: retail_context 0.2.0
+    Uninstalling retail_context-0.2.0:
+      Successfully uninstalled retail_context-0.2.0
+Successfully installed retail_context-0.2.0
+python.exe : 
+At line:2 char:190
++ ... oject; $out=& 'E:\harness_engineering\venvs\system2\Scripts\python.ex ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: E:\harness_engineering\venvs\system2\Scripts\python.exe -m pip install --upgrade pip
+exit_code=0

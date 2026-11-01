@@ -1,0 +1,23 @@
+﻿python.exe : Traceback (most recent call last):
+At line:2 char:299
++ ... ripts\python.exe'; $out=& $py -m claims_intake.run --all 2>&1; $rc=$L ...
++                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "E:\harness_engineering\harness_engineering\Build a Claims Intake Agent with a stop_reason-Driven 
+Loop\exercises\03-dynamic-decomposition\starter\claims_intake\run.py", line 267, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "E:\harness_engineering\harness_engineering\Build a Claims Intake Agent with a stop_reason-Driven 
+Loop\exercises\03-dynamic-decomposition\starter\claims_intake\run.py", line 220, in main
+    client = make_client()
+             ^^^^^^^^^^^^^
+  File "E:\harness_engineering\harness_engineering\Build a Claims Intake Agent with a stop_reason-Driven 
+Loop\exercises\03-dynamic-decomposition\starter\claims_intake\client.py", line 12, in make_client
+    raise RuntimeError(
+RuntimeError: ANTHROPIC_API_KEY is not set. Export it before running, e.g.:
+    export ANTHROPIC_API_KEY=sk-ant-...
+exit_code=1

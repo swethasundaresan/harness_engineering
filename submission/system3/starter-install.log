@@ -1,0 +1,32 @@
+﻿Obtaining file:///E:/harness_engineering/harness_engineering/Configure%20Claude%20Code%20for%20a%20Multi-Surface%20Monorepo%20Team/04-plan-mode-and-explore-decision-doc/starter
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: ecommerce-team-config
+  Building editable for ecommerce-team-config (pyproject.toml): started
+  Building editable for ecommerce-team-config (pyproject.toml): finished with status 'done'
+  Created wheel for ecommerce-team-config: filename=ecommerce_team_config-0.1.0-0.editable-py3-none-any.whl size=3419 sha256=534172ef29f969441913576546ede29b24546808d272252824a12956d27e23f2
+  Stored in directory: C:\Users\HP\AppData\Local\Temp\pip-ephem-wheel-cache-99b6grj_\wheels\92\47\08\70675bb3da94e9a41b81ecbadec9bc78bab882beb2d59ebc44
+Successfully built ecommerce-team-config
+Installing collected packages: ecommerce-team-config
+  Attempting uninstall: ecommerce-team-config
+    Found existing installation: ecommerce-team-config 0.1.0
+    Uninstalling ecommerce-team-config-0.1.0:
+      Successfully uninstalled ecommerce-team-config-0.1.0
+Successfully installed ecommerce-team-config-0.1.0
+python.exe : 
+At line:2 char:249
++ ... ation $project; $out=& $py -m pip install -e . --no-deps 2>&1; $rc=$L ...
++                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: E:\harness_engineering\harness_engineering\Configure Claude Code for a Multi-Surface Monorepo 
+Team\04-plan-mode-and-explore-decision-doc\solution\.venv\Scripts\python.exe -m pip install --upgrade pip
+exit_code=0

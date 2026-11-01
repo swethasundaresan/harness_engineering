@@ -1,0 +1,22 @@
+﻿Seeded from starter fixtures/defects.json
+seed_exit_code=0
+warm_total=40
+defects_since=17
+metrics_exit_code=0
+python.exe : 2026-11-01 13:12:25,672 shift_monitor.pipeline INFO run_shift start: shift=C since=2026-04-01T00:00:00Z
+At line:2 char:1258
++ ... it $rc}; $o=& $py -m shift_monitor run-shift --shift C --warm-db data ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (2026-11-01 13:1...04-01T00:00:00Z:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-11-01 13:12:25,781 shift_monitor.pipeline INFO run_shift done: shift=C new=17
+shift C: 17 new defects
+Shift C 2026-04-30: 3 high + 2 medium defects on capacitor-bank-C-7, all from lot 2026-0430-B (DAR 0.39, ESR ~19 mOhm); 1 low VP-4 vent squeal (repeat). Lot quarantine recommended.
+shift_exit_code=0
+post_warm_total=40
+post_defects_since=17
+hot_state_bytes=980
+scratchpad_bytes=323
+post_metrics_exit_code=0
+[(7, 0, 0, 'SEARCH defects USING INDEX idx_defects_ts (ts>?)')]

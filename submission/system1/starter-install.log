@@ -1,0 +1,33 @@
+﻿Obtaining file:///E:/harness_engineering/harness_engineering/Build%20a%20Claims%20Intake%20Agent%20with%20a%20stop_reason-Driven%20Loop/exercises/03-dynamic-decomposition/starter
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: claims_intake
+  Building editable for claims_intake (pyproject.toml): started
+  Building editable for claims_intake (pyproject.toml): finished with status 'done'
+  Created wheel for claims_intake: filename=claims_intake-0.1.0-0.editable-py3-none-any.whl size=2951 sha256=3ad52786cd49a81076df243a0bd97116b7d499d8c7bb5ba11e5ca5097ce04ad8
+  Stored in directory: C:\Users\HP\AppData\Local\Temp\pip-ephem-wheel-cache-ae_vwd_4\wheels\05\77\ae\d5f6a03be527a5bcbc92c0de215bc2534bacb70091360f8262
+Successfully built claims_intake
+Installing collected packages: claims_intake
+  Attempting uninstall: claims_intake
+    Found existing installation: claims_intake 0.1.0
+    Uninstalling claims_intake-0.1.0:
+      Successfully uninstalled claims_intake-0.1.0
+Successfully installed claims_intake-0.1.0
+python.exe : 
+At line:2 char:249
++ ... ation $project; $out=& $py -m pip install -e . --no-deps 2>&1; $rc=$L ...
++                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[notice] A new release of pip is available: 24.0 -> 26.2.2
+[notice] To update, run: E:\harness_engineering\harness_engineering\Build a Claims Intake Agent with a 
+stop_reason-Driven Loop\exercises\03-dynamic-decomposition\solution\.venv\Scripts\python.exe -m pip install --upgrade 
+pip
+exit_code=0

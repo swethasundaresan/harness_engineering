@@ -1,0 +1,13 @@
+Environment issue and fix
+
+The available system interpreter was Python 3.10.11, while all four solution
+projects declare requires-python >=3.11. The initial environment therefore did
+not meet the projects' declared runtime requirement. Python 3.11.9 was installed
+from the official Python package via winget. All four projects now have a
+Python 3.11 virtual environment; Systems 2 and 4 use short external venv paths
+because Anthropic SDK filenames exceed Windows' legacy 260-character path
+limit when installed under their long repository paths.
+
+The claims runner additionally requires ANTHROPIC_API_KEY. No API key or
+authenticated `claude` CLI is available in this environment, so an end-to-end
+model run cannot be completed here. No credential was requested or recorded.
